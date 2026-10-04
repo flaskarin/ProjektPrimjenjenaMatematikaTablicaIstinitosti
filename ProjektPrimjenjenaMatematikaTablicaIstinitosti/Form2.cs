@@ -11,6 +11,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
     public partial class Form2 : Form
     {
         private int brojVarijabli;
+        private LogickiIzraz? izraz;                              // Zadnji ispravno upisan izraz (null dok ga nema).
         
         public Form2(int broj)
         {
@@ -106,7 +107,17 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
 
         private void btnEq_Click(object sender, EventArgs e)
         {
+            string upisano = lblIzraz.Text;                       // String koji je korisnik upisao preko gumba.
 
+            try
+            {
+                izraz = new LogickiIzraz(upisano, brojVarijabli); // Provjeri izraz i spremi ga za kasnije (ispis tablice).
+            }
+            catch (FormatException ex)
+            {
+                izraz = null;                                     // Neispravan izraz se ne pamti.
+                MessageBox.Show(ex.Message, "Neispravan izraz");  // Korisniku kažemo što ne valja.
+            }
         }
     }
 }
