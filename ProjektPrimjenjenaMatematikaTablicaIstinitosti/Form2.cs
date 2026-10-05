@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -112,6 +113,19 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
             try
             {
                 izraz = new LogickiIzraz(upisano, brojVarijabli); // Provjeri izraz i spremi ga za kasnije (ispis tablice).
+
+                // using je ovdje kako bi se prosla tablica istinitosti izbrisala iz memorije (Ovo nije AI, ovo fakat znam Sruk ako ovaj using maknes ubit cu te)
+
+                using(var tablicaIstinitosti = new TablicaIstinitosti(izraz.Izraz, brojVarijabli))
+                {
+                    for (int i = 0; i < (1 << brojVarijabli); i++)
+                    {
+                        bool[] redak = izraz.VrijednostiRetka(i);
+                        bool rezultat = izraz.Izracunaj(redak);
+                        tablicaIstinitosti.PopuniRedak(i, redak, rezultat);
+                    }
+                    tablicaIstinitosti.ShowDialog(this);
+                }
             }
             catch (FormatException ex)
             {
