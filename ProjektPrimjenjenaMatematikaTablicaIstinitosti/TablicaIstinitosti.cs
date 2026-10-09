@@ -19,13 +19,13 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
             _brojRedaka = 1 << _brojVarijabli; // 2^n kombinacija
             _brojStupaca = brojVarijabli + 1;
             _indeksRezultata = _brojStupaca - 1;
-            InicijalizirajDjelove(naslov);
+            InicijalizirajDijelove(naslov);
             NacrtajTablicuIstinitosti();
 		}
 
 
 
-		private void InicijalizirajDjelove(string naslov)
+		private void InicijalizirajDijelove(string naslov)
 		{
             this.Text = naslov;
             this.Size = new Size(640, 480);
@@ -47,15 +47,27 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
                 ColumnCount = _brojStupaca,
                 ColumnHeadersVisible = true,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                // Ako zelis promjenit stil prozora to je ovdje
                 BackgroundColor = SystemColors.Window,
-                BorderStyle = BorderStyle.None,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                BorderStyle = BorderStyle.Fixed3D,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
             };
 
+            // Poravnanje tekst po sredini
             gridView.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             gridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Postavljanje fonta i pozadinske boje
             gridView.Columns[_indeksRezultata].DefaultCellStyle.Font = new Font(gridView.Font, FontStyle.Bold);
+            gridView.ColumnHeadersDefaultCellStyle.Font = new Font(gridView.Font, FontStyle.Regular);
+            gridView.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 165, 201, 235);
+            gridView.EnableHeadersVisualStyles = false; // Ovo je potrebno kako bi system čitao vrijednost iz gornje linije umjesto korištenja user defaulta
+
+            // Uklanjanje automatskog selectiona
+            gridView.DefaultCellStyle.SelectionBackColor = SystemColors.Window;
+            gridView.DefaultCellStyle.SelectionForeColor = SystemColors.ControlText; 
+            gridView.ColumnHeadersDefaultCellStyle.SelectionBackColor = gridView.ColumnHeadersDefaultCellStyle.BackColor;
+            gridView.ColumnHeadersDefaultCellStyle.SelectionForeColor = gridView.ColumnHeadersDefaultCellStyle.ForeColor;
 
             //Dodajemo tablicu u prozor
             this.Controls.Add(gridView);

@@ -13,7 +13,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
     {
         private int brojVarijabli;
         private LogickiIzraz? izraz;                              // Zadnji ispravno upisan izraz (null dok ga nema).
-        
+
         public Form2(int broj)
         {
             InitializeComponent();
@@ -24,10 +24,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
             btnD.Enabled = brojVarijabli >= 4;
             btnE.Enabled = brojVarijabli >= 5;
             btnF.Enabled = brojVarijabli >= 6;
-
-
         }
-
         private void btnA_Click(object sender, EventArgs e)
         {
             lblIzraz.Text += 'A';
@@ -60,10 +57,11 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
 
         private void btnDel_Click(object sender, EventArgs e)
         {
-            if (lblIzraz.Text.Length > 0) {
+            if (lblIzraz.Text.Length > 0)
+            {
                 lblIzraz.Text = lblIzraz.Text.Substring(0, lblIzraz.Text.Length - 1);
             }
-            
+
         }
 
         private void btnCE_Click(object sender, EventArgs e)
@@ -114,9 +112,9 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti
             {
                 izraz = new LogickiIzraz(upisano, brojVarijabli); // Provjeri izraz i spremi ga za kasnije (ispis tablice).
 
-                // using je ovdje kako bi se prosla tablica istinitosti izbrisala iz memorije (Ovo nije AI, ovo fakat znam Sruk ako ovaj using maknes ubit cu te)
+                // using je ovdje kako bi se prosla tablica istinitosti izbrisala iz memorije
 
-                using(var tablicaIstinitosti = new TablicaIstinitosti(izraz.Izraz, brojVarijabli))
+                using (var tablicaIstinitosti = new TablicaIstinitosti(izraz.Izraz, brojVarijabli))
                 {
                     for (int i = 0; i < (1 << brojVarijabli); i++)
                     {

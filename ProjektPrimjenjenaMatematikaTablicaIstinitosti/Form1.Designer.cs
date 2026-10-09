@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             txtBrLogVar = new Label();
             cmBoxBrLogVar = new ComboBox();
             btnSend = new Button();
@@ -36,38 +37,54 @@
             // txtBrLogVar
             // 
             txtBrLogVar.AutoSize = true;
-            txtBrLogVar.Location = new Point(196, 119);
+            txtBrLogVar.BackColor = Color.Transparent;
+            txtBrLogVar.Font = new Font("BankGothic Md BT", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            txtBrLogVar.ForeColor = Color.SteelBlue;
+            txtBrLogVar.Location = new Point(13, 21);
+            txtBrLogVar.Margin = new Padding(4, 0, 4, 0);
             txtBrLogVar.Name = "txtBrLogVar";
-            txtBrLogVar.Size = new Size(172, 15);
+            txtBrLogVar.Size = new Size(321, 16);
             txtBrLogVar.TabIndex = 0;
             txtBrLogVar.Text = "Odaberite broj logičkih varijabli";
             // 
             // cmBoxBrLogVar
             // 
             cmBoxBrLogVar.FormattingEnabled = true;
-            cmBoxBrLogVar.Location = new Point(406, 116);
+            cmBoxBrLogVar.Location = new Point(342, 20);
+            cmBoxBrLogVar.Margin = new Padding(4, 3, 4, 3);
             cmBoxBrLogVar.Name = "cmBoxBrLogVar";
-            cmBoxBrLogVar.Size = new Size(121, 23);
+            cmBoxBrLogVar.Size = new Size(136, 21);
             cmBoxBrLogVar.TabIndex = 1;
             // 
             // btnSend
             // 
-            btnSend.Location = new Point(342, 206);
+            btnSend.BackColor = Color.SteelBlue;
+            btnSend.FlatStyle = FlatStyle.Popup;
+            btnSend.Font = new Font("BankGothic Md BT", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnSend.ForeColor = Color.White;
+            btnSend.Location = new Point(188, 70);
+            btnSend.Margin = new Padding(4, 3, 4, 3);
             btnSend.Name = "btnSend";
-            btnSend.Size = new Size(75, 23);
+            btnSend.Size = new Size(104, 30);
             btnSend.TabIndex = 2;
             btnSend.Text = "Nastavi";
-            btnSend.UseVisualStyleBackColor = true;
+            btnSend.UseVisualStyleBackColor = false;
             btnSend.Click += btnSend_Click;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(9F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            BackColor = Color.SteelBlue;
+            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImageLayout = ImageLayout.Stretch;
+            ClientSize = new Size(482, 147);
             Controls.Add(btnSend);
             Controls.Add(cmBoxBrLogVar);
             Controls.Add(txtBrLogVar);
+            Font = new Font("BankGothic Md BT", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ForeColor = Color.White;
+            Margin = new Padding(4, 3, 4, 3);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);

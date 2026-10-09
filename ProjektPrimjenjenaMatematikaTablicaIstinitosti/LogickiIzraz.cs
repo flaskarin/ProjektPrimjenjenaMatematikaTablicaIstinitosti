@@ -9,9 +9,9 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
 
     public class LogickiIzraz                             
     {
-        public string Izraz { get; }           
+        public string Izraz;
 
-        public int BrojVarijabli { get; }        
+        public int BrojVarijabli; 
 
         public int BrojRedaka => 1 << BrojVarijabli;          
         // Broj redaka tablice = 2^n. "1 << n" je jedinica pomaknuta n mjesta ulijevo u binarnom zapisu, tj. 2 na n-tu.
@@ -20,10 +20,12 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
         public LogickiIzraz(string izraz, int brojVarijabli)  
         {
 
-            if (string.IsNullOrWhiteSpace(izraz))
+            if (izraz.Length==0)
+            {
                 throw new FormatException("Izraz je prazan.");
+            }
 
-            Izraz = izraz.Replace(" ", "");
+            Izraz = izraz;
             BrojVarijabli = brojVarijabli;
 
             Provjeri();
@@ -33,6 +35,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
         {
             bool ocekujemOperand = true; // true je za slova, false ocekuje znak
             int otvoreneZagrade = 0; // (  povećava, ) smanjuje
+            bool[] iskoristena = new bool[BrojVarijabli];
 
             for (int i = 0; i < Izraz.Length; i++)
             {
@@ -42,14 +45,17 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
                 if (JeVarijabla(c))
                 {
                     if (!ocekujemOperand)
+                    {
                         throw new FormatException($"Nedostaje operator prije '{c}' (pozicija {poz}).");
-                    ocekujemOperand = false;  
+                    }
+                    ocekujemOperand = false;
+                    iskoristena[c - 'A'] = true; // biljezi da je ova varijabla iskoristena
                 }
                 else if (c == '¬' || c == '(')
                 {
                     if (!ocekujemOperand)           
                         throw new FormatException($"Nedostaje operator prije '{c}' (pozicija {poz}).");
-                    if (c == '(') otvoreneZagrade++; // Zapamtimo da je otvorena zagrada
+                    if (c == '(') otvoreneZagrade++; // zapamtimo da je otvorena zagrada
                 }
                 else if (c == ')')
                 {
@@ -76,34 +82,37 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
             }
 
             if (ocekujemOperand) // završava operatorom npr. "A∧" ili "¬".
+            { 
                 throw new FormatException("Izraz nije dovršen (završava operatorom).");
+            }
 
             if (otvoreneZagrade > 0)
+            {
                 throw new FormatException("Nedostaje zatvorena zagrada ')'.");
+            }
+
+            for (int i = 0; i < BrojVarijabli; i++)
+            {
+                if (!iskoristena[i])
+                    throw new FormatException($"Varijabla '{(char)('A' + i)}' nije iskorištena u izrazu.\nMolimo odaberite sve ponuđene varijable ili odaberite manji broj varijabli.");
+            }
         }
-
-
-
-
 
         public bool Izracunaj(bool[] vrijednosti)
         {
             string s = UvrstiVrijednosti(vrijednosti); // vrijednost za svaku varijablu
+            while (s.Contains('('))  //rjesavamo se zagrada
             {
+                int otvorena = s.LastIndexOf('(');
+                int zatvorena = s.IndexOf(')', otvorena);
 
-                while (s.Contains('('))  //rjesavamo se zagrada
-                {
-                    int otvorena = s.LastIndexOf('(');
-                    int zatvorena = s.IndexOf(')', otvorena);
+                string unutra = s.Substring(otvorena + 1, zatvorena - otvorena - 1);
+                char rezultat = RijesiBezZagrada(unutra);
 
-                    string unutra = s.Substring(otvorena + 1, zatvorena - otvorena - 1);
-                    char rezultat = RijesiBezZagrada(unutra);
-
-                    s = s.Substring(0, otvorena) + rezultat + s.Substring(zatvorena + 1);
-                }
-
-                return RijesiBezZagrada(s) == '1';
+                s = s.Substring(0, otvorena) + rezultat + s.Substring(zatvorena + 1);
             }
+
+            return RijesiBezZagrada(s) == '1';
         }
         private string UvrstiVrijednosti(bool[] vrijednosti)
         {
@@ -125,7 +134,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
         }
 
 
-        private static char RijesiBezZagrada(string s) // static jer ne treba podatke, samo string koji dobije
+        private char RijesiBezZagrada(string s)
         {
             // negacija
             while (s.Contains('¬'))
@@ -148,7 +157,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
             return s[0];
         }
 
-        private static string RijesiOperator(string s, char op, bool zdesna)
+        private string RijesiOperator(string s, char op, bool zdesna)
         {
             int i = zdesna ? s.LastIndexOf(op) : s.IndexOf(op); // nađemo prvu (ili zadnju) pojavu operatora
             while (i != -1)
@@ -162,7 +171,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
             return s;
         }
 
-        private static bool Primijeni(char op, bool a, bool b)
+        private bool Primijeni(char op, bool a, bool b)
         {
             switch (op)
             {
@@ -179,7 +188,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
             return c >= 'A' && c < 'A' + BrojVarijabli;
         }
 
-        private static bool JeBinarni(char c)
+        private bool JeBinarni(char c)
         {
             return c == '∧' || c == '∨' || c == '→' || c == '↔';
         }
@@ -187,7 +196,7 @@ namespace ProjektPrimjenjenaMatematikaTablicaIstinitosti {
 
         public bool[] VrijednostiRetka(int redak)
         {
-            var v = new bool[BrojVarijabli]; // jedno mjesto za svaku varijablu
+            bool[] v = new bool[BrojVarijabli]; // jedno mjesto za svaku varijablu
             for (int j = 0; j < BrojVarijabli; j++)
                 v[j] = ((redak >> (BrojVarijabli - 1 - j)) & 1) == 1; // npr. redak 5 = 101: A=1, B=0, C=1.
             return v;
